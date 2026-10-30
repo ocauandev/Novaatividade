@@ -44,6 +44,45 @@ test.describe('Validação do Campo de Senha - QA Practice Register', () => {
     await expect(upperRequirement).not.toHaveClass(/text-danger/);
   });
 
+  test('Deve validar a exigência de letra minúscula', async ({ page }) => {
+    const passwordInput = page.locator('[data-testid="register-password"]');
+    const lowerRequirement = page.locator('text=At least one lowercase letter (a-z)');
+
+    // Senha sem letra minúscula
+    await passwordInput.fill('ABCDEFG1!');
+    await expect(lowerRequirement).toHaveClass(/text-danger/);
+
+    // Senha com letra minúscula
+    await passwordInput.fill('ABCDEFG1!a');
+    await expect(lowerRequirement).not.toHaveClass(/text-danger/);
+  });
+
+  test('Deve validar a exigência de número', async ({ page }) => {
+    const passwordInput = page.locator('[data-testid="register-password"]');
+    const numberRequirement = page.locator('text=At least one number (0-9)');
+
+    // Senha sem número
+    await passwordInput.fill('Abcdefgh!');
+    await expect(numberRequirement).toHaveClass(/text-danger/);
+
+    // Senha com número
+    await passwordInput.fill('Abcdefgh1!');
+    await expect(numberRequirement).not.toHaveClass(/text-danger/);
+  });
+
+  test('Deve validar a exigência de caractere especial', async ({ page }) => {
+    const passwordInput = page.locator('[data-testid="register-password"]');
+    const specialRequirement = page.locator('text=At least one special character');
+
+    // Senha sem caractere especial
+    await passwordInput.fill('Abcdefg1');
+    await expect(specialRequirement).toHaveClass(/text-danger/);
+
+    // Senha com caractere especial
+    await passwordInput.fill('Abcdefg1!');
+    await expect(specialRequirement).not.toHaveClass(/text-danger/);
+  });
+
   test('Deve impedir sucesso no registro ao utilizar senha fraca', async ({ page }) => {
     await page.locator('[data-testid="register-email"]').fill('qa_tester@email.com');
     await page.locator('[data-testid="register-password"]').fill('fraca');
